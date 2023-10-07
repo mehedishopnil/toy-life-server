@@ -22,10 +22,32 @@ const client = new MongoClient(uri, {
   }
 });
 
+
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const galleryImageCollection = client.db("toyLife").collection("galleryImage");
+
+    app.get('/galleryImage', async(req, res)=>{
+        try{
+            
+            const cursor = galleryImageCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        }
+
+        catch{ error => {
+            console.log(error);
+            res.status(500).send('Error fetching data from the database')
+        }}
+    })
+    
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
