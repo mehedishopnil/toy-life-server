@@ -7,7 +7,7 @@ const port = process.env.PORT || 5000;
 
 //middleWare
 app.use(cors());
-app.use(express());
+app.use(express.json());
 
 
 //MongoDB connect code here::
@@ -35,28 +35,30 @@ async function run() {
     const usersProductsCollection = client.db("toyLife").collection("usersProducts");
 
     //Gallery Image::
-    app.get('/galleryImage', async(req, res)=>{
-        try{
-            
-            const cursor = galleryImageCollection.find();
-            const result = await cursor.toArray();
-            res.send(result)
-        }
+    app.get('/galleryImage', async (req, res) => {
+      try {
 
-        catch{ error => {
-            console.log(error);
-            res.status(500).send('Error fetching data from the database')
-        }}
+        const cursor = galleryImageCollection.find();
+        const result = await cursor.toArray();
+        res.send(result)
+      }
+
+      catch {
+        error => {
+          console.log(error);
+          res.status(500).send('Error fetching data from the database')
+        }
+      }
     })
 
     //Products Data::
-    app.get('/productsData', async(req, res)=>{
-      try{
+    app.get('/productsData', async (req, res) => {
+      try {
         const cursor = toyProductsDataCollection.find();
         const result = await cursor.toArray();
         res.send(result)
       }
-      catch{
+      catch {
         error => {
           console.log(error);
           res.status(500).send("Error fetching data from the database")
@@ -66,27 +68,36 @@ async function run() {
 
 
     //Users Products Data::
-    app.get('/usersProducts', async(req, res)=>{
-     try{
-      const result = await usersProductsCollection.find().toArray();
-     }
-     catch{
-      error =>{
-        console.log(error);
-        res.status(500).send("Error fetching data from the database")
+    //Getting Data::
+    app.get('/usersProducts', async (req, res) => {
+      try {
+        const result = await usersProductsCollection.find().toArray();
+        res.send(result);
       }
-     }
+      catch (error) { 
+        console.log(error);
+        res.status(500).send("Error fetching data from the database");
+      }
     })
+
+    //Posting Data::
+    app.post("/usersProducts", async(req, res)=>{
+      const usersProducts = req.body;
+      console.log(usersProducts);
+
+      const result = await usersProductsCollection.insertOne(usersProducts);
+      res.send(result);
+    });
 
 
     //Blog Data::
-    app.get('/blogData', async(req, res)=>{
-      try{
+    app.get('/blogData', async (req, res) => {
+      try {
         const cursor = blogDataCollection.find();
         const result = await cursor.toArray();
         res.send(result)
       }
-      catch{
+      catch {
         error => {
           console.log(error);
           res.status(500).send("Error fetching data from the database")
@@ -94,7 +105,7 @@ async function run() {
       }
     })
 
-    
+
 
 
 
@@ -110,10 +121,10 @@ run().catch(console.dir);
 
 
 
-app.get('/',(req, res)=>{
-    res.send('ToyLife is running')
+app.get('/', (req, res) => {
+  res.send('ToyLife is running')
 })
 
-app.listen(port, ()=>{
-    console.log(`ToyLife is running on port, ${port}`);
+app.listen(port, () => {
+  console.log(`ToyLife is running on port, ${port}`);
 })
