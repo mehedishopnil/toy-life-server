@@ -32,6 +32,7 @@ async function run() {
     const galleryImageCollection = client.db("toyLife").collection("galleryImage");
     const toyProductsDataCollection = client.db("toyLife").collection("productsData");
     const blogDataCollection = client.db("toyLife").collection("blogData");
+    const usersProductsCollection = client.db("toyLife").collection("usersProducts");
 
     //Gallery Image::
     app.get('/galleryImage', async(req, res)=>{
@@ -61,6 +62,20 @@ async function run() {
           res.status(500).send("Error fetching data from the database")
         }
       }
+    })
+
+
+    //Users Products Data::
+    app.get('/usersProducts', async(req, res)=>{
+     try{
+      const result = await usersProductsCollection.find().toArray();
+     }
+     catch{
+      error =>{
+        console.log(error);
+        res.status(500).send("Error fetching data from the database")
+      }
+     }
     })
 
 
