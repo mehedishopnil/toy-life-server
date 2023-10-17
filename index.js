@@ -83,8 +83,6 @@ async function run() {
     //Posting Data::
     app.post("/usersProducts", async(req, res)=>{
       const usersProducts = req.body;
-      console.log(usersProducts);
-
       const result = await usersProductsCollection.insertOne(usersProducts);
       res.send(result);
     });
